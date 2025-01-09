@@ -1,13 +1,13 @@
-package com.hexagonal.coupon_service;
+package com.hexagonal.couponapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CouponServiceApplicationTests {
+class CouponApiApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }
