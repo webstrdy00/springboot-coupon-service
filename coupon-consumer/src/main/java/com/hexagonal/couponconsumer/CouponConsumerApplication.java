@@ -11,6 +11,7 @@ public class CouponConsumerApplication {
 
 	public static void main(String[] args) {
 		System.setProperty("spring.config.name", "application-core,application-consumer");
+		System.setProperty("spring.profiles.active", "local");
 		SpringApplication.run(CouponConsumerApplication.class, args);
 	}
 
