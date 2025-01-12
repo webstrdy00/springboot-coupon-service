@@ -23,9 +23,10 @@ public class CouponIssueRequestService {  // 쿠폰 발급 요청을 처리하�
      * 각 쿠폰별로 unique한 락을 생성하여 동시성 제어
      */
     public void issueRequestV1(CouponIssueRequestDto requestDto) {
-        distributeLockExecutor.execute("lock_" + requestDto.couponId(), 10000, 10000, () ->
-                couponIssueService.issue(requestDto.couponId(), requestDto.userId())
-        );
+//        distributeLockExecutor.execute("lock_" + requestDto.couponId(), 10000, 10000, () ->
+//                couponIssueService.issue(requestDto.couponId(), requestDto.userId())
+//        );
+        couponIssueService.issue(requestDto.couponId(), requestDto.userId());
         log.info("쿠폰 발급 완료. couponId: %s, userId: %s".formatted(requestDto.couponId(), requestDto.userId()));
     }
 }
