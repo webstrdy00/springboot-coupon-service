@@ -2,6 +2,7 @@ package com.hexagonal.couponapi.service;
 
 import com.hexagonal.couponapi.dto.CouponIssueRequestDto;
 import com.hexagonal.couponcore.component.DistributeLockExecutor;
+import com.hexagonal.couponcore.service.AsyncCouponIssueServiceV1;
 import com.hexagonal.couponcore.service.CouponIssueService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class CouponIssueRequestService {  // 쿠폰 발급 요청을 처리하는 서비스 계층
 
     private final CouponIssueService couponIssueService;
-    private final DistributeLockExecutor distributeLockExecutor;
+    private final AsyncCouponIssueServiceV1 asyncCouponIssueServiceV1;
     private final Logger log = LoggerFactory.getLogger(getClass().getSimpleName());
 
     /**
@@ -28,5 +29,9 @@ public class CouponIssueRequestService {  // 쿠폰 발급 요청을 처리하�
 //        );
         couponIssueService.issue(requestDto.couponId(), requestDto.userId());
         log.info("쿠폰 발급 완료. couponId: %s, userId: %s".formatted(requestDto.couponId(), requestDto.userId()));
+    }
+
+    public void asyncIssueRequestV1(CouponIssueRequestDto requestDto) {
+        asyncCouponIssueServiceV1.issue(requestDto.couponId(), requestDto.userId());
     }
 }
