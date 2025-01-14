@@ -48,6 +48,28 @@ public class RedisRepository {  // Redis Set 연산 관련 메서드들
     }
 
     /**
+     * Redis List의 크기 조회
+     */
+    public Long lSize(String key) {
+        return redisTemplate.opsForList().size(key);
+    }
+
+    /**
+     * List의 왼쪽(처음)에서 요소 제거 및 반환
+     */
+    public String lPop(String key) {
+        return redisTemplate.opsForList().leftPop(key);
+    }
+
+    /**
+     * List의 특정 위치 요소 조회
+     * @param index 조회할 위치 (0부터 시작)
+     */
+    public String lIndex(String key, long index) {
+        return redisTemplate.opsForList().index(key, index);
+    }
+
+    /**
      * Lua 스크립트를 사용한 원자적 쿠폰 발급 요청 처리
      * @param couponId
      * @param userId
