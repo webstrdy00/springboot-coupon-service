@@ -10,4 +10,8 @@ management:
   metrics:
     tags:
       application:
-        ${spring.application.name}
+        ${spring.application.name} # 매트릭에 애플리케이션 이름 태그 추가
+  endpoints:
+    web:
+      exposure:
+        include: prometheus # Prometheus 메트릭 엔드포인트 활성화
