@@ -3,9 +3,11 @@ package com.hexagonal.couponcore.service;
 import com.hexagonal.couponcore.exception.CouponIssueException;
 import com.hexagonal.couponcore.model.Coupon;
 import com.hexagonal.couponcore.model.CouponIssue;
+import com.hexagonal.couponcore.model.event.CouponIssueCompleteEvent;
 import com.hexagonal.couponcore.repository.mysql.CouponIssueJpaRepository;
 import com.hexagonal.couponcore.repository.mysql.CouponJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +24,14 @@ public class CouponIssueService {
 
     private final CouponJpaRepository couponJpaRepository;
     private final CouponIssueJpaRepository couponIssueJpaRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
-     * 쿠폰 발급을 처리하는 메인 메서드
+     * 쿠폰 발급 프로세스 실행
+     * 1. 비관적 락으로 쿠폰 조회
+     * 2. 발급 처리
+     * 3. 발급 이력 저장
+     * 4. 쿠폰 소진 시 이벤트 발행
      * @param couponId 발급할 쿠폰 ID
      * @param userId 발급 대상 사용자 ID
      */
@@ -33,6 +40,7 @@ public class CouponIssueService {
         Coupon coupon = findCouponWithLock(couponId);
         coupon.issue();  // 쿠폰 발급 가능 여부 확인 및 발급 처리
         saveCouponIssue(couponId, userId);
+        publishCouponEvent(coupon);  // 쿠폰 소진 시 이벤트 발행
     }
 
     /*
@@ -100,6 +108,16 @@ public class CouponIssueService {
         if (issue != null) {
             throw new CouponIssueException(DUPLICATED_COUPON_ISSUE,
                     "이미 발급된 쿠폰입니다. user_id: %s, coupon_id: %s".formatted(userId, couponId));
+        }
+    }
+
+    /**
+     * 쿠폰 발급 완료 시 이벤트 발행
+     * 발급이 완료되면 캐시 갱신을 위한 이벤트 발행
+     */
+    private void publishCouponEvent(Coupon coupon) {
+        if (coupon.isIssueComplete()) {
+            applicationEventPublisher.publishEvent(new CouponIssueCompleteEvent(coupon.getId()));
         }
     }
 }

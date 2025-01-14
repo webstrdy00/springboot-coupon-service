@@ -1,6 +1,5 @@
 package com.hexagonal.couponcore.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hexagonal.couponcore.repository.redis.CouponRedisEntity;
 import com.hexagonal.couponcore.repository.redis.RedisRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class AsyncCouponIssueServiceV2 {
     private final RedisRepository redisRepository;
     private final CouponCacheService couponCacheService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * 쿠폰 발급 요청 처리
@@ -26,7 +24,7 @@ public class AsyncCouponIssueServiceV2 {
      * @param userId 사용자 ID
      */
     public void issue(long couponId, long userId) {
-        CouponRedisEntity coupon = couponCacheService.getCouponCache(couponId);
+        CouponRedisEntity coupon = couponCacheService.getCouponLocalCache(couponId);
         coupon.checkIssuableCoupon();
         issueRequest(couponId, userId, coupon.totalQuantity());
     }
