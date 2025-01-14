@@ -4,7 +4,7 @@ bootJar.enabled = false
 
 plugins {
     java
-    id("org.springframework.boot") version "3.1.8"
+    id("org.springframework.boot") version "3.3.4"
     id("io.spring.dependency-management") version "1.1.4"
 }
 
